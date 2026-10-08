@@ -1,0 +1,14 @@
+{
+  "name": "Spanisch – 10 Minuten",
+  "short_name": "Spanisch",
+  "description": "Täglich 10 Minuten Spanisch lernen: Vokabeln, Konjugation, Zeiten.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFCF1F",
+  "theme_color": "#FFCF1F",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

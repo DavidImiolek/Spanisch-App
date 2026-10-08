@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#FFCF1F">
+<title>Spanisch – 10 Minuten</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Karla:wght@400;600;800&display=swap">
+<style>
+:root{
+  --ground:#FFCF1F; --ink:#2B1608; --line:#2B1608; --card:#FFFFFF; --field:#FFFFFF; --red:#D7261E; --word:#D7261E;
+  --soft:#FFE98A; --muted:#5A3A22; --ok:#12693E; --ok-bg:#E3F4EA; --bad:#A30D25; --bad-bg:#FBE7EA;
+  box-sizing:border-box; padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#2A1A0A; --ink:#FFF1CC; --line:#FFCF1F; --card:#3B2713; --field:#2A1A0A; --word:#FFCF1F;
+    --soft:#4A3218; --muted:#DBC59C; --ok:#7FDDA8; --ok-bg:#0F3A28; --bad:#FF9AA8; --bad-bg:#431520;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#2A1A0A; --ink:#FFF1CC; --line:#FFCF1F; --card:#3B2713; --field:#2A1A0A; --word:#FFCF1F;
+  --soft:#4A3218; --muted:#DBC59C; --ok:#7FDDA8; --ok-bg:#0F3A28; --bad:#FF9AA8; --bad-bg:#431520;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--ground);color:var(--ink);
+  font-family:'Karla','Helvetica Neue','Segoe UI',sans-serif;font-size:17px;line-height:1.35;-webkit-text-size-adjust:100%}
+#app{max-width:480px;min-height:100%;margin:0 auto;display:flex;flex-direction:column;background:var(--ground)}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+.hero{flex-shrink:0;padding-top:env(safe-area-inset-top,0px)}
+.hero.tall{padding-top:calc(env(safe-area-inset-top,0px) + 28px)}
+.bar{display:flex;align-items:center;gap:12px;padding:12px 20px 0 20px}
+.iconbtn{width:44px;height:44px;border:3px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0}
+.track{flex:1;height:16px;border:3px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden}
+.track i{display:block;height:10px;background:var(--red);transition:width .25s ease}
+.count{font-size:16px;font-weight:800;min-width:48px;text-align:right}
+.task{margin:18px 26px 0 20px;padding:18px 18px 20px 18px;background:var(--card);border:3px solid var(--line);border-radius:14px;
+  box-shadow:6px 6px 0 var(--line);display:flex;flex-direction:column;gap:6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.chip{font-size:14px;font-weight:600;color:var(--ink)}
+.chip.on{font-weight:800;padding:3px 10px;border-radius:6px;background:var(--line);color:var(--ground)}
+.ask{font-size:16px;margin-top:10px}
+.word{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:clamp(32px,11vw,46px);line-height:1.05;color:var(--word);overflow-wrap:anywhere}
+.word.small{font-size:clamp(24px,7.6vw,32px)}
+.sub{font-size:14px;font-weight:600;color:var(--muted)}
+.sub.big{font-size:20px;font-weight:800;color:var(--ink)}
+
+.body{padding:22px 26px 24px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+label.lbl{font-size:15px;font-weight:800}
+input.ans{height:58px;width:100%;border:3px solid var(--line);border-radius:12px;padding:0 16px;font-family:inherit;
+  font-size:20px;font-weight:600;color:var(--ink);background:var(--field)}
+input.ans::placeholder{color:var(--muted);opacity:.85;font-weight:400}
+.row{display:flex;gap:12px;align-items:stretch}
+.btn{min-height:56px;border:3px solid var(--line);border-radius:12px;padding:0 18px;font-size:19px;font-weight:800;background:var(--red);color:#fff;
+  box-shadow:4px 4px 0 var(--line);flex:1}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line)}
+.btn.soft{background:var(--soft);color:var(--ink);font-size:16px;font-weight:600;flex:0 0 auto;box-shadow:none;padding:0 14px}
+.btn.soft:active{transform:none}
+.btn.wide{flex:none;width:100%}
+.btn:disabled{opacity:.5}
+.fb{border:3px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.fb.ok{background:var(--ok-bg);color:var(--ok)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb.hint{background:var(--card);color:var(--ink)}
+.fb b{display:block;font-weight:800}
+.fb span{color:var(--ink)}
+.fb .muted{color:var(--ink);opacity:.8}
+.fb svg{flex-shrink:0;margin-top:2px}
+.link{background:none;border:0;padding:10px 0;min-height:44px;color:var(--ink);font-size:15px;font-weight:600;text-decoration:underline;text-align:left}
+
+.card{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:16px}
+.card .es{font-size:19px;font-weight:800}
+.card .de{color:var(--muted);margin-top:2px}
+.h1{font-family:'Alfa Slab One',Georgia,serif;font-weight:400;font-size:clamp(38px,12vw,52px);line-height:1;color:var(--word);margin:0}
+.h2{font-size:20px;font-weight:800;margin:6px 0 0 0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--card);border:3px solid var(--line);border-radius:12px;padding:10px}
+.stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+.stat small{font-size:13px;color:var(--muted)}
+ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.plain li{border-bottom:2px solid var(--line);padding-bottom:8px}
+ul.plain li:last-child{border-bottom:0}
+.muted{color:var(--muted);font-size:15px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--card);border:2px solid var(--line);color:var(--ink);margin-left:6px;vertical-align:middle}
+.auth-box{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.auth-box input{height:58px;width:100%;border:3px solid var(--line);border-radius:12px;padding:0 16px;font-family:inherit;
+  font-size:18px;color:var(--ink);background:var(--field)}
+.auth-box input::placeholder{color:var(--muted);opacity:.85}
+.install-banner{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.install-banner .title{font-weight:800;font-size:16px}
+.install-banner .desc{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){.track i{transition:none}.btn:active{transform:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+<script>
+"use strict";
+
+/* ---------- Supabase Config ---------- */
+const SB_URL = "https://iceniiuwjqnisukdqtsb.supabase.co";
+const SB_KEY = "sb_publishable_P4olrMRK7g1sgYX_MA3csA_sI8BU2sv";
+const VAPID_PUBLIC = "BJS8feA-HgNI5lxjIImC4MAbwhUKvakm7dO8WyGjhCwgX8q7B23LYXJ-SP_sLzwuuXkRTvgFfE32UxSR7HktMGw";
+const sb = supabase.createClient(SB_URL, SB_KEY);
+let currentUser = null;
+
+/* ---------- Beispieldaten: drei Themenpakete ---------- */
+const PACKS = [
+ {id:"biz1", area:"Business", title:"Meetings", words:[
+  ["reunion","la reunión","die Besprechung",["Meeting","Sitzung","Treffen","Versammlung"],"Substantiv","La reunión empieza a las nueve.","Die Besprechung beginnt um neun.",[],""],
+  ["plazo","el plazo","die Frist",["Termin","Deadline","Abgabetermin","Abgabefrist"],"Substantiv","El plazo termina el viernes.","Die Frist endet am Freitag.",[],""],
+  ["presupuesto","el presupuesto","das Budget",["Kostenvoranschlag","Haushalt","Etat","Angebot"],"Substantiv","Tenemos que ajustar el presupuesto.","Wir müssen das Budget anpassen.",[],""],
+  ["aplazar","aplazar","verschieben",["aufschieben","vertagen","verlegen"],"Verb","Vamos a aplazar la reunión una semana.","Wir verschieben die Besprechung um eine Woche.",["posponer"],""],
+  ["acuerdo","el acuerdo","die Vereinbarung",["Abkommen","Einigung","Übereinkunft","Abmachung","Übereinkommen"],"Substantiv","Por fin llegamos a un acuerdo.","Endlich haben wir eine Einigung erzielt.",[],""],
+  ["negociar","negociar","verhandeln",["aushandeln"],"Verb","Hay que negociar el precio.","Man muss den Preis verhandeln.",[],""],
+  ["informe","el informe","der Bericht",["Report"],"Substantiv","Te mando el informe esta tarde.","Ich schicke dir den Bericht heute Nachmittag.",[],""],
+  ["empresa","la empresa","das Unternehmen",["Firma","Betrieb"],"Substantiv","Trabajo en una empresa pequeña.","Ich arbeite in einem kleinen Unternehmen.",["la compañía"],""],
+  ["encargarse","encargarse de","sich kümmern um",["kümmern um","sich kümmern","kümmern","zuständig sein für","zuständig sein","übernehmen","sich um etwas kümmern"],"Verb","Yo me encargo de las facturas.","Ich kümmere mich um die Rechnungen.",["encargarse"],""],
+  ["propuesta","la propuesta","der Vorschlag",["Angebot","Antrag"],"Substantiv","Tu propuesta me parece muy buena.","Dein Vorschlag gefällt mir sehr gut.",[],""]
+ ]},
+ {id:"alltag1", area:"Alltag", title:"Wohnen", words:[
+  ["alquiler","el alquiler","die Miete",["Mietpreis"],"Substantiv","El alquiler ha subido otra vez.","Die Miete ist schon wieder gestiegen.",[],""],
+  ["mudarse","mudarse","umziehen",["umsiedeln"],"Verb","Nos mudamos a Valencia en mayo.","Wir ziehen im Mai nach Valencia.",[],""],
+  ["vecino","el vecino","der Nachbar",[],"Substantiv","Mi vecino toca la guitarra por la noche.","Mein Nachbar spielt nachts Gitarre.",[],""],
+  ["factura","la factura","die Rechnung",[],"Substantiv","Todavía no he pagado la factura de la luz.","Ich habe die Stromrechnung noch nicht bezahlt.",[],""],
+  ["enchufe","el enchufe","die Steckdose",["Stecker"],"Substantiv","¿Hay un enchufe cerca de la cama?","Gibt es eine Steckdose in der Nähe des Bettes?",[],""],
+  ["arreglar","arreglar","reparieren",["in Ordnung bringen","richten","aufräumen","regeln","herrichten"],"Verb","Tengo que arreglar la puerta.","Ich muss die Tür reparieren.",["reparar"],""],
+  ["piso","el piso","die Wohnung",["Stockwerk","Etage","Stock"],"Substantiv","Buscamos un piso con balcón.","Wir suchen eine Wohnung mit Balkon.",[],"In Lateinamerika eher: el departamento"],
+  ["lavadora","la lavadora","die Waschmaschine",[],"Substantiv","La lavadora hace un ruido raro.","Die Waschmaschine macht ein komisches Geräusch.",[],""],
+  ["compartir","compartir","teilen",["gemeinsam nutzen"],"Verb","Comparto piso con dos amigos.","Ich teile mir die Wohnung mit zwei Freunden.",[],""],
+  ["acogedor","acogedor","gemütlich",["behaglich","einladend","wohnlich"],"Adjektiv","Tu salón es muy acogedor.","Dein Wohnzimmer ist sehr gemütlich.",["acogedora"],""]
+ ]},
+ {id:"ugs1", area:"Umgangssprache", title:"Unter Freunden", words:[
+  ["molar","molar","gefallen",["cool sein","toll sein","gut gefallen","cool finden"],"Verb, ugs.","Me mola mucho tu chaqueta.","Deine Jacke gefällt mir total.",[],"Funktioniert wie gustar"],
+  ["curro","el curro","die Arbeit",["Job","Maloche"],"Substantiv, ugs.","Mañana tengo mucho curro.","Morgen habe ich viel Arbeit.",[],""],
+  ["pasta","la pasta","die Kohle",["Geld","Knete","Kohle"],"Substantiv, ugs.","No tengo pasta para salir.","Ich habe keine Kohle zum Ausgehen.",[],"Gemeint ist Geld"],
+  ["flipar","flipar","ausflippen",["baff sein","staunen","durchdrehen","ausrasten","es nicht fassen können"],"Verb, ugs.","Vas a flipar cuando lo veas.","Du wirst ausflippen, wenn du es siehst.",[],""],
+  ["majo","majo","nett",["sympathisch","lieb","freundlich"],"Adjektiv, ugs.","Tu hermano es muy majo.","Dein Bruder ist sehr nett.",["maja"],""],
+  ["tio","el tío","der Typ",["Kerl","Onkel","Alter"],"Substantiv, ugs.","Ese tío siempre llega tarde.","Dieser Typ kommt immer zu spät.",[],"Wörtlich: der Onkel"],
+  ["quedar","quedar","sich verabreden",["verabreden","sich treffen","treffen","ausmachen"],"Verb","¿Quedamos a las ocho en el bar?","Treffen wir uns um acht in der Bar?",[],""],
+  ["guay","guay","cool",["toll","super","geil","klasse","spitze"],"Adjektiv, ugs.","¡Qué guay tu móvil nuevo!","Wie cool, dein neues Handy!",[],""],
+  ["currar","currar","arbeiten",["schuften","malochen","jobben"],"Verb, ugs.","Llevo todo el día currando.","Ich arbeite schon den ganzen Tag.",[],"Umgangssprachlich für trabajar"],
+  ["cana","la caña","das kleine Bier",["Bier","Fassbier","gezapftes Bier","kleines Bier","Bier vom Fass"],"Substantiv","¿Tomamos una caña después del trabajo?","Trinken wir nach der Arbeit ein Bier?",[],"Kleines Glas Bier vom Fass"]
+ ]}
+];
+const WORDS = {};
+PACKS.forEach(p => p.words.forEach(a => { WORDS[a[0]] = {id:a[0],es:a[1],de:a[2],deAlt:a[3],type:a[4],exEs:a[5],exDe:a[6],esAlt:a[7],note:a[8],area:p.area}; }));
+
+/* ---------- Tolerante Antwortprüfung ---------- */
+const strip = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"");
+const base = s => s.toLowerCase().replace(/ß/g,"ss").replace(/[.,;:!?¡¿'"´`''""()\[\]\-–—\/]/g," ").replace(/\s+/g," ").trim();
+const deCore = s => base(s).replace(/^(der|die|das|ein|eine|einen|einem|den|dem) /,"").replace(/^(sich|zu|etwas) /,"");
+function deKeys(s){ const c = deCore(s); return [strip(c.replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue")), strip(c)]; }
+const esKey = s => strip(base(s));
+const esNoArt = s => esKey(s).replace(/^(el|la|los|las|un|una) /,"");
+function checkDe(w, input){
+  const ok = new Set(); [w.de].concat(w.deAlt).forEach(a => deKeys(a).forEach(k => ok.add(k)));
+  return deKeys(input).some(k => k && ok.has(k)) ? "ok" : "bad";
+}
+function checkEs(w, input){
+  const all = [w.es].concat(w.esAlt), k = esKey(input);
+  if(!k) return "bad";
+  if(all.some(a => esKey(a) === k)) return "ok";
+  if(all.some(a => esKey(a) !== esNoArt(a) && esNoArt(a) === k)) return "article";
+  return "bad";
+}
+
+/* ---------- Speicherung ---------- */
+const LS = "spanisch-costa-v1", LS_SESS = "spanisch-costa-session-v2";
+const lsGet = k => { try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; }catch(e){ return null; } };
+const lsSet = (k,v) => { try{ v === null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+const fresh = () => ({v:1, words:{}, packs:[], streak:0, lastDay:"", sessions:0, qi:0, zi:0, conj:{}, zstat:{}, nofig:false, updated:0});
+let S = Object.assign(fresh(), lsGet(LS) || {});
+
+/* ---------- Supabase Sync ---------- */
+async function syncFromCloud(){
+  if(!currentUser) return;
+  try{
+    const { data } = await sb.from("progress").select("data").eq("user_id", currentUser.id).maybeSingle();
+    if(data && data.data && (data.data.updated || 0) > (S.updated || 0)){
+      S = Object.assign(fresh(), data.data);
+      lsSet(LS, S);
+      if(view === "home") home();
+    }
+  }catch(e){}
+}
+async function persist(){
+  S.updated = Date.now(); lsSet(LS, S);
+  if(!currentUser) return;
+  try{
+    await sb.from("progress").upsert({ user_id: currentUser.id, data: S, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+  }catch(e){}
+}
+
+/* ---------- kleine Helfer ---------- */
+const $app = document.getElementById("app");
+let view = "home";
+function h(tag, attrs){
+  const el = document.createElement(tag);
+  for(const k in (attrs || {})){
+    const v = attrs[k];
+    if(k === "class") el.className = v; else if(k === "text") el.textContent = v;
+    else if(k.slice(0,2) === "on") el.addEventListener(k.slice(2), v);
+    else if(v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for(let i = 2; i < arguments.length; i++){ const c = arguments[i]; if(c == null || c === false) continue; el.append(c.nodeType ? c : document.createTextNode(c)); }
+  return el;
+}
+function icon(path){ const d = h("span"); d.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"></path></svg>'; return d.firstChild; }
+const I_X = "M6 6l12 12M18 6L6 18", I_OK = "M5 12.5l4.5 4.5L19 7.5", I_INFO = "M12 8v.5M12 11.5V16";
+const I_GEAR = "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z";
+const today = () => { const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const dayBefore = s => { const d = new Date(s+"T12:00:00"); d.setDate(d.getDate()-1); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const shuffle = a => { a = a.slice(); for(let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+function hero(tall){ return h("div",{class:"hero"+(tall?" tall":"")}); }
+function show(){ $app.replaceChildren.apply($app, arguments); window.scrollTo(0,0); }
+
+/* ---------- Konjugation ---------- */
+const SEQ = ["v","k","v","z","v","k","z"];
+const PERS = ["yo","tú","él / ella","nosotros","vosotros","ellos / ellas"];
+const TENSES = [["pres","Presente"],["indef","Indefinido"],["imperf","Imperfecto"],["fut","Futuro"],["cond","Condicional"],["subj","Subjuntivo Presente"]];
+const E_ER = {pres:["o","es","e","emos","éis","en"],indef:["í","iste","ió","imos","isteis","ieron"],imperf:["ía","ías","ía","íamos","íais","ían"],subj:["a","as","a","amos","áis","an"]};
+const END = {
+ ar:{pres:["o","as","a","amos","áis","an"],indef:["é","aste","ó","amos","asteis","aron"],imperf:["aba","abas","aba","ábamos","abais","aban"],subj:["e","es","e","emos","éis","en"]},
+ er:E_ER,
+ ir:{pres:["o","es","e","imos","ís","en"],indef:E_ER.indef,imperf:E_ER.imperf,subj:E_ER.subj}
+};
+const FUT = ["é","ás","á","emos","éis","án"], COND = ["ía","ías","ía","íamos","íais","ían"];
+const VERBS = [
+ {inf:"hablar"},{inf:"comer"},{inf:"vivir"},
+ {inf:"ser",pres:"soy eres es somos sois son",indef:"fui fuiste fue fuimos fuisteis fueron",imperf:"era eras era éramos erais eran",subj:"sea seas sea seamos seáis sean"},
+ {inf:"estar",pres:"estoy estás está estamos estáis están",indef:"estuve estuviste estuvo estuvimos estuvisteis estuvieron",subj:"esté estés esté estemos estéis estén"},
+ {inf:"tener",pres:"tengo tienes tiene tenemos tenéis tienen",indef:"tuve tuviste tuvo tuvimos tuvisteis tuvieron",fs:"tendr",subj:"tenga tengas tenga tengamos tengáis tengan"},
+ {inf:"hacer",pres:"hago haces hace hacemos hacéis hacen",indef:"hice hiciste hizo hicimos hicisteis hicieron",fs:"har",subj:"haga hagas haga hagamos hagáis hagan"},
+ {inf:"ir",pres:"voy vas va vamos vais van",indef:"fui fuiste fue fuimos fuisteis fueron",imperf:"iba ibas iba íbamos ibais iban",subj:"vaya vayas vaya vayamos vayáis vayan"},
+ {inf:"poder",pres:"puedo puedes puede podemos podéis pueden",indef:"pude pudiste pudo pudimos pudisteis pudieron",fs:"podr",subj:"pueda puedas pueda podamos podáis puedan"},
+ {inf:"decir",pres:"digo dices dice decimos decís dicen",indef:"dije dijiste dijo dijimos dijisteis dijeron",fs:"dir",subj:"diga digas diga digamos digáis digan"},
+ {inf:"querer",pres:"quiero quieres quiere queremos queréis quieren",indef:"quise quisiste quiso quisimos quisisteis quisieron",fs:"querr",subj:"quiera quieras quiera queramos queráis quieran"},
+ {inf:"saber",pres:"sé sabes sabe sabemos sabéis saben",indef:"supe supiste supo supimos supisteis supieron",fs:"sabr",subj:"sepa sepas sepa sepamos sepáis sepan"},
+ {inf:"venir",pres:"vengo vienes viene venimos venís vienen",indef:"vine viniste vino vinimos vinisteis vinieron",fs:"vendr",subj:"venga vengas venga vengamos vengáis vengan"},
+ {inf:"poner",pres:"pongo pones pone ponemos ponéis ponen",indef:"puse pusiste puso pusimos pusisteis pusieron",fs:"pondr",subj:"ponga pongas ponga pongamos pongáis pongan"},
+ {inf:"salir",pres:"salgo sales sale salimos salís salen",fs:"saldr",subj:"salga salgas salga salgamos salgáis salgan"},
+ {inf:"dar",pres:"doy das da damos dais dan",indef:"di diste dio dimos disteis dieron",subj:"dé des dé demos deis den"},
+ {inf:"ver",pres:"veo ves ve vemos veis ven",indef:"vi viste vio vimos visteis vieron",imperf:"veía veías veía veíamos veíais veían",subj:"vea veas vea veamos veáis vean"},
+ {inf:"pedir",pres:"pido pides pide pedimos pedís piden",indef:"pedí pediste pidió pedimos pedisteis pidieron",subj:"pida pidas pida pidamos pidáis pidan"},
+ {inf:"dormir",pres:"duermo duermes duerme dormimos dormís duermen",indef:"dormí dormiste durmió dormimos dormisteis durmieron",subj:"duerma duermas duerma durmamos durmáis duerman"},
+ {inf:"conocer",pres:"conozco conoces conoce conocemos conocéis conocen",subj:"conozca conozcas conozca conozcamos conozcáis conozcan"}
+];
+function conj(v,t,p){
+  if(v[t]) return v[t].split(" ")[p];
+  if(t === "fut") return (v.fs || v.inf) + FUT[p];
+  if(t === "cond") return (v.fs || v.inf) + COND[p];
+  return v.inf.slice(0,-2) + END[v.inf.slice(-2)][t][p];
+}
+const irregular = (v,t) => !!v[t] || ((t === "fut" || t === "cond") && !!v.fs);
+const stripPron = s => esKey(s).replace(/^(yo|tu|el|ella|usted|nosotros|nosotras|vosotros|vosotras|ellos|ellas|ustedes) /,"");
+
+/* ---------- Zeiten ---------- */
+const TOPICS = [
+ {title:"Indefinido oder Imperfecto", rule:[
+   "Indefinido: abgeschlossene, einmalige Handlungen und Handlungsketten. Signalwörter: ayer, el año pasado, de repente.",
+   "Imperfecto: Beschreibungen, Gewohnheiten und Hintergrund. Signalwörter: antes, siempre, todos los días, mientras.",
+   "Zusammen: Das Imperfecto malt die Szene, das Indefinido erzählt, was dann passiert ist."],
+  gaps:[
+   ["Ayer","un móvil nuevo.","yo","comprar",["compré"],"Ayer: einmalig und abgeschlossen, also Indefinido."],
+   ["Cuando era pequeño,","al fútbol todos los días.","yo","jugar",["jugaba"],"Todos los días: Gewohnheit in der Vergangenheit, also Imperfecto."],
+   ["Mientras",", sonó el teléfono.","nosotros","cenar",["cenábamos"],"Laufende Hintergrundhandlung nach mientras: Imperfecto."],
+   ["Mientras cenábamos,","el teléfono.","él","sonar",["sonó"],"Die Handlung, die plötzlich eintritt: Indefinido."],
+   ["La casa","grande y tenía un jardín.","ella","ser",["era"],"Beschreibung eines Zustands: Imperfecto."],
+   ["El año pasado","a Sevilla.","nosotros","ir",["fuimos"],"El año pasado: abgeschlossener Zeitraum, einmalige Reise, also Indefinido."],
+   ["Antes","en Madrid, ahora vivo en Bilbao.","yo","vivir",["vivía"],"Antes im Gegensatz zu heute: früherer Zustand, Imperfecto."],
+   ["De repente","a llover.","él","empezar",["empezó"],"De repente: plötzlicher Beginn, Indefinido."],
+   ["","mucho frío cuando salimos de casa.","él","hacer",["hacía"],"Wetter als Hintergrund der Handlung: Imperfecto."]],
+  free:[
+   {word:"ayer", card:"Erzähl in einem Satz, was du gestern gemacht hast.", ex:"Ayer fui al gimnasio y después cené con unos amigos."},
+   {word:"de niño", card:"Beschreib in einem Satz, wie dein Alltag als Kind war.", ex:"De niño iba al colegio en bici y jugaba en la calle todas las tardes."}]},
+ {title:"Subjuntivo Presente", rule:[
+   "Subjuntivo nach Wunsch, Gefühl, Bewertung und Zweifel mit que: quiero que, espero que, me alegro de que, es importante que, no creo que.",
+   "Subjuntivo nach para que und nach cuando, wenn es um die Zukunft geht.",
+   "Indicativo bleibt nach creo que, pienso que, es verdad que: Dort wird etwas als Tatsache hingestellt."],
+  gaps:[
+   ["Quiero que","a la fiesta.","tú","venir",["vengas"],"Wunsch mit que und anderem Subjekt: Subjuntivo."],
+   ["Espero que","un buen viaje.","vosotros","tener",["tengáis"],"Espero que drückt eine Hoffnung aus: Subjuntivo."],
+   ["Creo que Ana","en casa.","ella","estar",["está"],"Creo que stellt etwas als Tatsache hin: Indicativo."],
+   ["No creo que Ana","en casa.","ella","estar",["esté"],"Verneintes creer drückt Zweifel aus: Subjuntivo."],
+   ["Te llamo cuando",".","yo","llegar",["llegue"],"Cuando mit Bezug auf die Zukunft: Subjuntivo."],
+   ["Es importante que","con el cliente.","nosotros","hablar",["hablemos"],"Bewertung mit es importante que: Subjuntivo."],
+   ["Me alegro de que","venir.","tú","poder",["puedas"],"Gefühl mit que: Subjuntivo."],
+   ["Te lo explico para que lo",".","tú","entender",["entiendas"],"Para que verlangt immer den Subjuntivo."],
+   ["Es verdad que","mucho.","él","trabajar",["trabaja"],"Es verdad que bestätigt eine Tatsache: Indicativo."]],
+  free:[
+   {word:"Espero que …", card:"Schreib einen Wunsch oder eine Hoffnung.", ex:"Espero que tengas un buen día."},
+   {word:"cuando …", card:"Schreib einen Satz mit cuando über etwas, das noch passieren wird.", ex:"Cuando termine el trabajo, te llamo."}]},
+ {title:"Si-Sätze", rule:[
+   "Real, gut möglich: si + Presente, im Hauptsatz Presente, Futuro oder Imperativ.",
+   "Irreal in der Gegenwart: si + Subjuntivo Imperfecto, im Hauptsatz Condicional.",
+   "Direkt nach si steht nie Futuro und nie Condicional."],
+  gaps:[
+   ["Si","tiempo mañana, te llamo.","yo","tener",["tengo"],"Reale Bedingung: nach si steht Presente, nie Futuro."],
+   ["Si tuviera dinero,","una casa.","yo","comprar",["compraría"],"Irreale Bedingung: im Hauptsatz Condicional."],
+   ["Si","tú, hablaría con ella.","yo","ser",["fuera","fuese"],"Irreal, also Subjuntivo Imperfecto nach si."],
+   ["Si llueve,","en casa.","nosotros","quedarse",["nos quedamos","nos quedaremos"],"Reale Bedingung: im Hauptsatz Presente oder Futuro. Das Reflexivpronomen nos gehört dazu."],
+   ["Si","más, aprobarías el examen.","tú","estudiar",["estudiaras","estudiases"],"Aprobarías ist Condicional, also davor Subjuntivo Imperfecto."],
+   ["Iría contigo si",".","yo","poder",["pudiera","pudiese"],"Iría ist Condicional, also nach si Subjuntivo Imperfecto."],
+   ["Si",", podemos salir esta noche.","vosotros","querer",["queréis"],"Reale Bedingung mit Presente im Hauptsatz: nach si Presente."],
+   ["Si me tocara la lotería,","el trabajo.","yo","dejar",["dejaría"],"Tocara ist Subjuntivo Imperfecto, also Condicional im Hauptsatz."],
+   ["Si no","tanto calor, saldríamos a correr.","él","hacer",["hiciera","hiciese"],"Saldríamos ist Condicional, also nach si Subjuntivo Imperfecto."]],
+  free:[
+   {word:"si …", card:"Schreib einen realen Bedingungssatz: etwas, das gut passieren kann.", ex:"Si tengo tiempo, voy al gimnasio."},
+   {word:"si tuviera …", card:"Was würdest du tun, wenn du ein Jahr frei hättest?", ex:"Si tuviera un año libre, viajaría por Sudamérica."}]}
+];
+const gapText = g => (g[0] ? g[0] + " " : "") + "_____" + (/^[,.;!?]/.test(g[1]) ? "" : " ") + g[1];
+
+/* ---------- Session planen ---------- */
+function pickOld(n, exclude){
+  const pool = Object.keys(S.words).filter(id => WORDS[id] && exclude.indexOf(id) < 0).map(id => ({id, w: 1/Math.pow((S.words[id].s||0)+1, 1.6)}));
+  return pickWeighted(pool, n).map(x => x.id);
+}
+function pickWeighted(pool, n){
+  pool = pool.slice(); const out = [];
+  while(out.length < n && pool.length){
+    let r = Math.random()*pool.reduce((s,x) => s+x.w, 0), i = 0;
+    for(; i < pool.length-1; i++){ r -= pool[i].w; if(r <= 0) break; }
+    out.push(pool.splice(i,1)[0]);
+  }
+  return out;
+}
+function nextPack(){ return PACKS.find(p => S.packs.indexOf(p.id) < 0) || null; }
+const nextType = () => SEQ[(S.qi||0) % SEQ.length];
+function blank(type, area, title){ return {type, area, title, phase: FLOW[type][0], i:0, news:[], olds:[], sents:[], errors:{}, labels:{}, first:0, firstOk:0, done:0, total:0, start:Date.now(), elapsed:0}; }
+function planSession(){
+  const t = nextType(), X = t === "k" ? planConj() : t === "z" ? planTense() : planVocab();
+  return X;
+}
+function planVocab(){
+  const pack = nextPack(), X = blank("v", pack ? pack.area : "Wiederholung", pack ? pack.title : "Alte Wörter");
+  X.packId = pack ? pack.id : null;
+  X.news = pack ? pack.words.map(a => a[0]) : [];
+  X.olds = pickOld(pack ? 5 : 15, X.news);
+  const half = Math.ceil(X.olds.length/2);
+  X.q1 = shuffle(X.news.concat(X.olds.slice(0,half))).map(id => ({id, dir:"es"}));
+  X.q2 = shuffle(X.news.concat(X.olds.slice(half))).map(id => ({id, dir:"de"}));
+  const pool = X.news.length ? shuffle(X.news) : X.olds.slice().sort((a,b) => (S.words[a].s||0)-(S.words[b].s||0));
+  X.sents = pool.slice(0,5).map(id => { const w = WORDS[id]; return {ask:"Schreib einen Satz mit:", word:w.es, sub:w.de, label:w.es, ctx:"Der Satz soll das Wort «"+w.es+"» ("+w.de+") sinnvoll verwenden.", ex:w.exEs, text:""}; });
+  X.total = X.news.length + X.q1.length + X.q2.length + X.sents.length;
+  return X;
+}
+function planConj(){
+  const X = blank("k", "Verbformen", "25 Formen"), cands = [];
+  VERBS.forEach((v,vi) => TENSES.forEach(tt => { const w = (irregular(v,tt[0]) ? 3 : 1) + 2*((S.conj||{})[v.inf+":"+tt[0]]||0); for(let p = 0; p < 6; p++) cands.push({k:[vi,tt[0],p], w}); }));
+  X.olds = pickOld(5, []);
+  X.warm = shuffle(X.olds).map((id,ix) => ({id, dir: ix % 2 ? "de" : "es"}));
+  X.conj = pickWeighted(cands, 25).map(c => ({k:c.k}));
+  X.total = X.warm.length + X.conj.length;
+  return X;
+}
+function planTense(){
+  const ti = (S.zi||0) % TOPICS.length, T = TOPICS[ti], X = blank("z", "Lückensätze", T.title);
+  X.topic = ti;
+  X.gaps = shuffle(T.gaps.map((g,gi) => ({g:[ti,gi]})));
+  X.sents = T.free.map(f => ({ask:"Schreib einen Satz:", word:f.word, sub:"", card:f.card, label:f.word, ctx:"Thema: "+T.title+". Aufgabe: "+f.card, ex:f.ex, text:""}));
+  X.total = 1 + X.gaps.length + X.sents.length;
+  return X;
+}
+const FLOW = {v:["intro","q1","q2","sent"], k:["warm","conj"], z:["rule","gaps","sent"]};
+let X = null;
+function saveSess(){ if(X){ X.elapsed += Date.now() - X.start; X.start = Date.now(); } lsSet(LS_SESS, X); }
+
+/* ---------- Auth-Bildschirm ---------- */
+function loginScreen(){
+  view = "login";
+  const hr = hero(true);
+  hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"¡Hola!"}), h("div",{class:"sub",text:"Anmelden, um deinen Fortschritt zu sichern."})));
+  const emailInput = h("input",{type:"email",placeholder:"Deine E-Mail-Adresse",autocomplete:"email"});
+  const msg = h("div",{class:"muted"});
+  const sendLink = async () => {
+    const email = emailInput.value.trim();
+    if(!email){ msg.textContent = "Bitte E-Mail eingeben."; return; }
+    msg.textContent = "Link wird gesendet …";
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
+    if(error){ msg.textContent = "Fehler: " + error.message; return; }
+    msg.textContent = "✓ Check deine E-Mails! Klick den Link darin, dann bist du eingeloggt.";
+  };
+  emailInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); sendLink(); } });
+  show(hr, h("div",{class:"body"},
+    h("div",{class:"auth-box"}, emailInput, h("button",{class:"btn wide",text:"Magic Link senden",onclick:sendLink}), msg),
+    h("button",{class:"link",text:"Erstmal ohne Konto weiter",onclick: () => { home(); }})));
+}
+
+/* ---------- Einstellungen ---------- */
+function settingsScreen(){
+  view = "settings";
+  const hr = hero(true);
+  hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"⚙️"}), h("div",{class:"sub",text:"Einstellungen"})));
+  const pushBox = h("div",{});
+  const updatePushUI = () => {
+    if(!("serviceWorker" in navigator) || !("PushManager" in window)){
+      pushBox.replaceChildren(h("div",{class:"muted",text:"Push-Benachrichtigungen werden auf diesem Gerät nicht unterstützt. Installiere die App erst auf deinem Homescreen (Teilen → Zum Home-Bildschirm)."}));
+      return;
+    }
+    const perm = Notification.permission;
+    if(perm === "granted"){
+      pushBox.replaceChildren(h("div",{class:"fb ok"}, icon(I_OK), h("div",{}, h("b",{text:"Benachrichtigungen aktiv"}), h("span",{text:"Du bekommst Erinnerungen um 10:00 und 18:00 Uhr."}))));
+    } else if(perm === "denied"){
+      pushBox.replaceChildren(h("div",{class:"fb bad"}, icon(I_X), h("div",{}, h("b",{text:"Blockiert"}), h("span",{text:"Geh in die iPhone-Einstellungen → Safari/App → Mitteilungen erlauben."}))));
+    } else {
+      pushBox.replaceChildren(h("button",{class:"btn wide",text:"Erinnerungen aktivieren",onclick: async () => {
+        await subscribePush(); updatePushUI();
+      }}));
+    }
+  };
+  updatePushUI();
+  show(hr, h("div",{class:"body"},
+    h("div",{class:"h2",text:"Push-Benachrichtigungen"}),
+    h("div",{class:"muted",text:"Tägliche Erinnerung um 10:00 und 18:00 Uhr, falls du noch nicht geübt hast."}),
+    pushBox,
+    currentUser ? h("div",{style:"margin-top:24px"},
+      h("div",{class:"h2",text:"Konto"}),
+      h("div",{class:"muted",text:"Eingeloggt als " + currentUser.email}),
+      h("button",{class:"link",text:"Ausloggen",onclick: async () => { await sb.auth.signOut(); currentUser = null; home(); }})) : null,
+    h("div",{style:"margin-top:24px"},
+      h("div",{class:"h2",text:"Daten"}),
+      h("button",{class:"link",text:"Fortschritt zurücksetzen",onclick: () => { if(confirm("Wirklich den gesamten Lernfortschritt löschen?")){ const nf = S.nofig; S = fresh(); S.nofig = nf; lsSet(LS_SESS,null); persist(); home(); } }})),
+    h("button",{class:"btn soft wide",style:"margin-top:24px",text:"Zurück",onclick: home})));
+}
+
+/* ---------- Push-Benachrichtigungen ---------- */
+async function subscribePush(){
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm !== "granted") return;
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC)
+    });
+    if(currentUser){
+      await sb.from("push_subscriptions").upsert({
+        user_id: currentUser.id,
+        subscription: sub.toJSON(),
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
+    }
+  }catch(e){ console.error("Push subscription failed:", e); }
+}
+function urlBase64ToUint8Array(base64String){
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(base64);
+  const arr = new Uint8Array(raw.length);
+  for(let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+
+/* ---------- Startseite ---------- */
+function home(){
+  view = "home";
+  const saved = lsGet(LS_SESS), known = Object.keys(S.words).length, t = nextType(), pack = nextPack();
+  const sure = Object.keys(S.words).filter(id => (S.words[id].s||0) >= 3).length;
+  const doneToday = S.lastDay === today();
+  const hr = hero(true);
+  hr.append(
+    h("div",{style:"display:flex;justify-content:flex-end;padding:8px 20px 0 0"},
+      h("button",{class:"iconbtn",style:"width:40px;height:40px","aria-label":"Einstellungen",onclick:settingsScreen}, icon(I_GEAR))),
+    h("div",{class:"task"},
+      h("p",{class:"h1",text:"¡Hola!"}),
+      h("div",{class:"sub",text: doneToday ? "Heute schon gelernt. Noch eine Runde?" : "Deine Session für heute wartet."})));
+  let info, detail;
+  if(saved){ info = "Angefangene Session: " + saved.title; detail = "Du machst dort weiter, wo du aufgehört hast."; }
+  else if(t === "k"){ info = "Konjugieren: 25 Verbformen"; detail = (known ? "Erst 5 alte Vokabeln zum Aufwärmen, dann " : "") + "Formen aus sechs Zeiten, mit vosotros. Etwa 10 Minuten."; }
+  else if(t === "z"){ info = "Zeiten: " + TOPICS[(S.zi||0) % TOPICS.length].title; detail = "Kurze Regel, 9 Lückensätze mit Begründung, 2 eigene Sätze. Etwa 10 Minuten."; }
+  else if(pack){ info = "Vokabeln: " + pack.area + ", " + pack.title; detail = "10 neue Wörter, " + Math.min(5, known) + " alte zur Wiederholung, 5 eigene Sätze. Etwa 10 Minuten."; }
+  else { info = "Vokabeln: Wiederholung"; detail = "15 gelernte Wörter, gemischt in beiden Richtungen, und 5 eigene Sätze. Etwa 10 Minuten."; }
+
+  // Install banner for non-standalone
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const installBanner = !isStandalone ? h("div",{class:"install-banner"},
+    h("div",{class:"title",text:"📱 App installieren"}),
+    h("div",{class:"desc",text:"Tippe auf „Teilen" → „Zum Home-Bildschirm", um die App wie eine echte App zu nutzen und Push-Benachrichtigungen zu bekommen."})) : null;
+
+  show(hr, h("div",{class:"body"},
+    h("div",{class:"stats"},
+      h("div",{class:"stat"}, h("b",{text:String(streakNow())}), h("small",{text: streakNow() === 1 ? "Tag in Folge" : "Tage in Folge"})),
+      h("div",{class:"stat"}, h("b",{text:String(known)}), h("small",{text:"Wörter gelernt"})),
+      h("div",{class:"stat"}, h("b",{text:String(sure)}), h("small",{text:"davon sicher"}))),
+    h("div",{class:"card"}, h("div",{class:"es",text:info}), h("div",{class:"de",text:detail})),
+    h("button",{class:"btn wide",text: saved ? "Session fortsetzen" : "Session starten", onclick: () => { X = saved || planSession(); X.start = Date.now(); step(); }}),
+    !currentUser ? h("button",{class:"link",text:"Anmelden, um Fortschritt zu sichern",onclick:loginScreen}) : null,
+    installBanner
+  ));
+}
+function streakNow(){ const t = today(); return (S.lastDay === t || S.lastDay === dayBefore(t)) ? S.streak : 0; }
+
+/* ---------- Session-Bildschirme ---------- */
+function topBar(){
+  const pct = Math.min(100, Math.round(100 * X.done / Math.max(1, X.total)));
+  return h("div",{class:"bar"},
+    h("button",{class:"iconbtn","aria-label":"Session unterbrechen", onclick: () => { saveSess(); X = null; home(); }}, icon(I_X)),
+    h("div",{class:"track",role:"progressbar","aria-valuenow":String(pct),"aria-valuemin":"0","aria-valuemax":"100","aria-label":"Fortschritt"}, (() => { const i = h("i"); i.style.width = pct+"%"; return i; })()),
+    h("div",{class:"count",text: pct + " %"}));
+}
+function taskBlock(chipA, ask, word, sub, small){
+  return h("div",{class:"task"},
+    h("div",{class:"chips"}, h("div",{class:"chip on",text:chipA}), h("div",{class:"chip",text:X.area})),
+    h("div",{class:"ask",text:ask}), h("div",{class:"word" + (small ? " small" : ""),text:word}), sub ? h("div",{class:"sub" + (small === false ? " big" : ""),text:sub}) : null);
+}
+function step(){
+  view = "session"; saveSess();
+  const ph = X.phase;
+  if(ph === "intro") return X.i >= X.news.length ? adv() : intro();
+  if(ph === "rule") return X.i >= 1 ? adv() : rule();
+  if(ph === "sent") return X.i >= X.sents.length ? adv() : sentence();
+  return X.i >= X[ph].length ? adv() : ask(X[ph]);
+}
+function adv(){ const f = FLOW[X.type], n = f.indexOf(X.phase) + 1; if(n >= f.length) return finish(); X.phase = f[n]; X.i = 0; step(); }
+function intro(){
+  const w = WORDS[X.news[X.i]], hr = hero(false);
+  hr.append(topBar(), taskBlock("Neu " + (X.i+1) + " von " + X.news.length, "Präg dir ein:", w.es, w.de));
+  const go = () => { X.i++; X.done++; step(); };
+  const btn = h("button",{class:"btn wide",text: X.i+1 < X.news.length ? "Nächstes Wort" : "Abfrage starten", onclick: go});
+  show(hr, h("div",{class:"body"},
+    h("div",{class:"card"}, h("div",{class:"es",text:w.exEs}), h("div",{class:"de",text:w.exDe})),
+    h("div",{class:"muted"}, w.type, w.note ? h("span",{class:"tag",text:w.note}) : null),
+    btn));
+  btn.focus({preventScroll:true});
+}
+function rule(){
+  const T = TOPICS[X.topic], hr = hero(false);
+  hr.append(topBar(), taskBlock("Zeiten", "Kurz zur Erinnerung:", T.title, "", true));
+  const btn = h("button",{class:"btn wide",text:"Übung starten", onclick: () => { X.i++; X.done++; step(); }});
+  show(hr, h("div",{class:"body"}, h("ul",{class:"plain"}, ...T.rule.map(r => h("li",{text:r}))), btn));
+  btn.focus({preventScroll:true});
+}
+function desc(item){
+  if(item.k){
+    const v = VERBS[item.k[0]], t = item.k[1], p = item.k[2], tn = TENSES.find(x => x[0] === t)[1], sol = conj(v,t,p);
+    return {chip:"Konjugieren", ask:tn, word:v.inf, sub:PERS[p], bigSub:true, ph:"Form eintippen", key:"k:"+v.inf+":"+t, label:v.inf + ", " + tn + ", " + PERS[p] + ": " + sol,
+      solution:sol, note:"", check: val => esKey(sol) === stripPron(val) ? "ok" : "bad"};
+  }
+  if(item.g){
+    const T = TOPICS[item.g[0]], g = T.gaps[item.g[1]];
+    return {chip:"Zeiten", ask:"Setz die richtige Form ein:", word:g[3], sub:g[2], bigSub:true, card:gapText(g), ph:"fehlende Form eintippen", key:"g:"+item.g[0]+":"+item.g[1],
+      label:(t => t.charAt(0).toUpperCase() + t.slice(1))(gapText(g).replace("_____", g[4][0])), solution:g[4].join(" oder "), note:g[5], always:true,
+      check: val => g[4].some(a => esKey(a) === stripPron(val) || esKey(a) === esKey(val)) ? "ok" : "bad"};
+  }
+  const w = WORDS[item.id], toDe = item.dir === "es", isOld = X.olds.indexOf(item.id) >= 0;
+  return {chip: isOld ? "Wiederholung" : "Vokabeln", ask: toDe ? "Was heißt das auf Deutsch?" : "Wie heißt das auf Spanisch?", word: toDe ? w.es : w.de,
+    sub: toDe ? w.type : w.type + (w.type.indexOf("Substantiv") === 0 ? ", mit Artikel" : ""), ph: toDe ? "auf Deutsch eintippen" : "auf Spanisch eintippen",
+    key:item.id, label:w.es + " – " + w.de, solution: toDe ? w.de + (w.deAlt.length ? " (auch: " + w.deAlt.slice(0,3).join(", ") + ")" : "") : w.es,
+    note:w.note, override:true, check: val => toDe ? checkDe(w,val) : checkEs(w,val)};
+}
+function ask(queue){
+  const item = queue[X.i], d = desc(item), hr = hero(false);
+  hr.append(topBar(), taskBlock(d.chip, d.ask, d.word, d.sub, d.bigSub ? false : undefined));
+  const input = h("input",{class:"ans",id:"ans",type:"text",autocomplete:"off",autocapitalize:"off",autocorrect:"off",spellcheck:"false",enterkeyhint:"done",placeholder:d.ph});
+  const fb = h("div",{"aria-live":"polite"}), actions = h("div",{class:"row"});
+  let state = "ask";
+  const settle = (ok) => {
+    if(!item.retry){ X.first++; if(ok) X.firstOk++; }
+    if(ok){ X.done++; }
+    else { X.errors[d.key] = (X.errors[d.key]||0) + 1; X.labels[d.key] = d.label; queue.splice(Math.min(X.i+4, queue.length), 0, Object.assign({}, item, {retry:true})); }
+  };
+  const next = () => { X.i++; step(); };
+  const same = q => q.retry && JSON.stringify([q.id,q.dir,q.k,q.g]) === JSON.stringify([item.id,item.dir,item.k,item.g]);
+  const reveal = (ok, mine) => {
+    state = "fb";
+    fb.replaceChildren(h("div",{class:"fb " + (ok ? "ok" : "bad")}, icon(ok ? I_OK : I_X),
+      h("div",{}, h("b",{text: ok ? "Richtig" : "Nicht ganz"}), h("span",{text: (ok ? "" : "Richtig wäre: ") + d.solution}),
+        d.note && (d.always || !ok) ? h("div",{class:"muted",text:d.note}) : null)));
+    actions.replaceChildren(h("button",{class:"btn",text:"Weiter",onclick: next}),
+      (!ok && mine && d.override) ? h("button",{class:"btn soft",text:"War doch richtig",onclick: () => {
+        X.errors[d.key] = Math.max(0,(X.errors[d.key]||1)-1); if(!X.errors[d.key]){ delete X.errors[d.key]; delete X.labels[d.key]; }
+        const k = queue.findIndex((q,ix) => ix > X.i && same(q)); if(k >= 0) queue.splice(k,1);
+        if(!item.retry) X.firstOk++; X.done++; next(); }}) : null);
+  };
+  const check = () => {
+    const val = input.value.trim(); if(!val){ input.focus(); return; }
+    const r = d.check(val);
+    if(r === "article"){ fb.replaceChildren(h("div",{class:"fb hint"}, icon(I_INFO), h("div",{}, h("b",{text:"Fast: der Artikel fehlt"}), h("span",{text:"Tipp das Wort noch einmal mit el oder la."})))); input.focus(); return; }
+    settle(r === "ok"); reveal(r === "ok", true);
+  };
+  const giveUp = () => { if(state !== "ask") return; settle(false); reveal(false, false); };
+  input.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); state === "ask" ? check() : next(); } });
+  input.addEventListener("beforeinput", e => { if(state === "fb") e.preventDefault(); });
+  actions.append(h("button",{class:"btn",text:"Prüfen",onclick: () => { if(state === "ask") check(); }}), h("button",{class:"btn soft",text:"Weiß ich nicht",onclick: giveUp}));
+  show(hr, h("div",{class:"body"}, d.card ? h("div",{class:"card"}, h("div",{class:"es",text:d.card})) : null,
+    h("label",{class:"lbl",for:"ans",text:"Deine Antwort"}), input, fb, actions));
+  input.focus({preventScroll:true});
+}
+function sentence(){
+  const s = X.sents[X.i], hr = hero(false);
+  hr.append(topBar(), taskBlock("Satz " + (X.i+1) + " von " + X.sents.length, s.ask, s.word, s.sub));
+  const input = h("input",{class:"ans",id:"ans",type:"text",autocomplete:"off",autocapitalize:"sentences",autocorrect:"off",spellcheck:"false",enterkeyhint:"done",placeholder:"dein spanischer Satz"});
+  const go = (skip) => { const v = input.value.trim(); if(!skip && !v){ input.focus(); return; } s.text = skip ? "" : v; X.i++; X.done++; step(); };
+  input.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); go(false); } });
+  show(hr, h("div",{class:"body"}, s.card ? h("div",{class:"card"}, h("div",{class:"es",text:s.card})) : null,
+    h("label",{class:"lbl",for:"ans",text:"Dein Satz"}), input,
+    h("div",{class:"muted",text:"Die Sätze werden am Ende gemeinsam korrigiert."}),
+    h("div",{class:"row"}, h("button",{class:"btn",text:"Weiter",onclick: () => go(false)}), h("button",{class:"btn soft",text:"Überspringen",onclick: () => go(true)}))));
+  input.focus({preventScroll:true});
+}
+
+/* ---------- Abschluss ---------- */
+function finish(){
+  view = "done";
+  X.elapsed += Date.now() - X.start;
+  const t = today();
+  X.news.forEach(id => { S.words[id] = {s: X.errors[id] ? 1 : 2, d: t}; });
+  X.olds.forEach(id => { const cur = S.words[id] || {s:0}; S.words[id] = {s: X.errors[id] ? Math.max(0, cur.s-2) : Math.min(5, cur.s+1), d: t}; });
+  if(X.packId && S.packs.indexOf(X.packId) < 0) S.packs.push(X.packId);
+  if(X.type === "k"){
+    S.conj = S.conj || {};
+    X.conj.forEach(it => { if(it.retry) return; const key = VERBS[it.k[0]].inf + ":" + it.k[1];
+      if(X.errors["k:"+key]) S.conj[key] = Math.min(5, (S.conj[key]||0) + 1); else if(S.conj[key]){ S.conj[key]--; if(!S.conj[key]) delete S.conj[key]; } });
+  }
+  if(X.type === "z"){ S.zi = (S.zi||0) + 1; S.zstat = S.zstat || {}; const z = S.zstat[X.topic] || {n:0, ok:0}; z.n += X.first; z.ok += X.firstOk; S.zstat[X.topic] = z; }
+  S.qi = (S.qi||0) + 1;
+  if(S.lastDay !== t){ S.streak = (S.lastDay === dayBefore(t)) ? S.streak + 1 : 1; S.lastDay = t; }
+  S.sessions++; persist(); lsSet(LS_SESS, null);
+  const sess = X; X = null;
+  const mins = Math.max(1, Math.round(sess.elapsed/60000)), rate = sess.first ? Math.round(100*sess.firstOk/sess.first) : 100;
+  const shaky = Object.keys(sess.errors);
+  const hr = hero(true);
+  hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"¡Hecho!"}), h("div",{class:"sub",text:"Session abgeschlossen."})));
+  const sentBox = h("div",{});
+  show(hr, h("div",{class:"body"},
+    h("div",{class:"stats"},
+      h("div",{class:"stat"}, h("b",{text: rate + " %"}), h("small",{text:"beim ersten Versuch"})),
+      h("div",{class:"stat"}, h("b",{text: mins + " min"}), h("small",{text:"Dauer"})),
+      h("div",{class:"stat"}, h("b",{text:String(S.streak)}), h("small",{text: S.streak === 1 ? "Tag in Folge" : "Tage in Folge"}))),
+    shaky.length ? h("p",{class:"h2",text:"Noch wackelig"}) : null,
+    shaky.length ? h("ul",{class:"plain"}, ...shaky.map(k => h("li",{text: sess.labels[k] || k}))) : h("div",{class:"muted",text:"Kein einziger Fehler. Alles saß."}),
+    sentBox,
+    h("button",{class:"btn wide",text:"Noch eine Session",onclick: () => { X = planSession(); step(); }}),
+    h("button",{class:"btn soft wide",text:"Zur Startseite",onclick: home})));
+  reviewSentences(sess, sentBox);
+}
+
+/* ---------- Satzkorrektur über OpenAI Edge Function ---------- */
+async function reviewSentences(sess, box){
+  const items = sess.sents.filter(s => s.text); if(!items.length) return;
+  const list = h("ul",{class:"plain"});
+  items.forEach(s => { s.row = h("div",{class:"muted",text:"wird korrigiert …"}); list.append(h("li",{}, h("div",{}, h("b",{text:s.label}), ": " + s.text), s.row)); });
+  box.append(h("p",{class:"h2",text:"Deine Sätze"}), list);
+  const fallback = () => items.forEach(s => { s.row.textContent = "Zum Vergleich: " + s.ex; });
+
+  // Try Supabase Edge Function (OpenAI)
+  if(currentUser){
+    try{
+      const { data: { session: authSession } } = await sb.auth.getSession();
+      if(authSession){
+        const entries = items.map((s,i) => ({i, aufgabe:s.ctx, satz:s.text}));
+        const res = await fetch(SB_URL + "/functions/v1/openai-proxy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + authSession.access_token, "apikey": SB_KEY },
+          body: JSON.stringify({ action: "correct", payload: { entries } })
+        });
+        if(res.ok){
+          const json = await res.json();
+          const arr = (json && json.results) || [];
+          items.forEach((s,i) => {
+            const r = arr.find(x => x && x.i === i); if(!r){ s.row.textContent = "Zum Vergleich: " + s.ex; return; }
+            s.row.replaceChildren(h("div",{class:"fb " + (r.ok ? "ok" : "bad"),style:"margin-top:6px"}, icon(r.ok ? I_OK : I_X),
+              h("div",{}, h("b",{text: r.ok ? "Passt" : "Besser so"}), r.ok ? null : h("span",{text:String(r.korrektur || "")}), r.hinweis ? h("div",{class:"muted",text:String(r.hinweis)}) : null)));
+          });
+          return;
+        }
+      }
+    }catch(e){ console.error("Correction error:", e); }
+  }
+  // Fallback: show example sentences
+  box.append(h("div",{class:"muted",text:"Korrektur nur mit Konto verfügbar. Vergleich deine Sätze mit den Beispielen."}));
+  fallback();
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  // Register service worker
+  if("serviceWorker" in navigator){
+    try{ await navigator.serviceWorker.register("sw.js"); }catch(e){}
+  }
+
+  // Check auth state
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){ currentUser = session.user; await syncFromCloud(); }
+
+  // Listen for auth changes (magic link callback)
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if(event === "SIGNED_IN" && session){
+      currentUser = session.user;
+      await syncFromCloud();
+      // Auto-subscribe to push after login
+      if("PushManager" in window && Notification.permission === "default"){
+        // Don't auto-ask, let them do it from settings
+      }
+      home();
+    }
+    if(event === "SIGNED_OUT"){ currentUser = null; }
+  });
+
+  home();
+}
+init();
+</script>
+</body>
+</html>
