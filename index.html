@@ -379,20 +379,38 @@ function saveSess(){ if(X){ X.elapsed += Date.now() - X.start; X.start = Date.no
 function loginScreen(){
   view = "login";
   const hr = hero(true);
-  hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"¡Hola!"}), h("div",{class:"sub",text:"Anmelden, um deinen Fortschritt zu sichern."})));
+  hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"!Hola!"}), h("div",{class:"sub",text:"Anmelden, um deinen Fortschritt zu sichern."})));
   const emailInput = h("input",{type:"email",placeholder:"Deine E-Mail-Adresse",autocomplete:"email"});
+  const codeInput = h("input",{type:"text",placeholder:"6-stelliger Code",autocomplete:"one-time-code",inputMode:"numeric",maxLength:6,style:"display:none"});
   const msg = h("div",{class:"muted"});
-  const sendLink = async () => {
-    const email = emailInput.value.trim();
-    if(!email){ msg.textContent = "Bitte E-Mail eingeben."; return; }
-    msg.textContent = "Link wird gesendet …";
-    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
-    if(error){ msg.textContent = "Fehler: " + error.message; return; }
-    msg.textContent = "✓ Check deine E-Mails! Klick den Link darin, dann bist du eingeloggt.";
+  const btn = h("button",{class:"btn wide",text:"Code senden"});
+  let sentEmail = "";
+  btn.onclick = async () => {
+    if(!sentEmail){
+      const email = emailInput.value.trim();
+      if(!email){ msg.textContent = "Bitte E-Mail eingeben."; return; }
+      msg.textContent = "Code wird gesendet ...";
+      const { error } = await sb.auth.signInWithOtp({ email });
+      if(error){ msg.textContent = "Fehler: " + error.message; return; }
+      sentEmail = email;
+      msg.textContent = "Code wurde an " + email + " gesendet.";
+      emailInput.style.display = "none";
+      codeInput.style.display = "";
+      btn.textContent = "Anmelden";
+      codeInput.focus();
+    } else {
+      const token = codeInput.value.trim();
+      if(!token || token.length < 6){ msg.textContent = "Bitte den 6-stelligen Code eingeben."; return; }
+      msg.textContent = "Wird geprüft ...";
+      const { error } = await sb.auth.verifyOtp({ email: sentEmail, token, type: "email" });
+      if(error){ msg.textContent = "Fehler: " + error.message; return; }
+      msg.textContent = "Angemeldet!";
+    }
   };
-  emailInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); sendLink(); } });
+  emailInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); btn.click(); } });
+  codeInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); btn.click(); } });
   show(hr, h("div",{class:"body"},
-    h("div",{class:"auth-box"}, emailInput, h("button",{class:"btn wide",text:"Magic Link senden",onclick:sendLink}), msg),
+    h("div",{class:"auth-box"}, emailInput, codeInput, btn, msg),
     h("button",{class:"link",text:"Erstmal ohne Konto weiter",onclick: () => { home(); }})));
 }
 
