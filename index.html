@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
@@ -404,14 +404,14 @@ function settingsScreen(){
   const pushBox = h("div",{});
   const updatePushUI = () => {
     if(!("serviceWorker" in navigator) || !("PushManager" in window)){
-      pushBox.replaceChildren(h("div",{class:"muted",text:"Push-Benachrichtigungen werden auf diesem Gerät nicht unterstützt. Installiere die App erst auf deinem Homescreen (Teilen → Zum Home-Bildschirm)."}));
+      pushBox.replaceChildren(h("div",{class:"muted",text:"Push-Benachrichtigungen werden auf diesem Gerät nicht unterstützt. Installiere die App erst auf deinem Homescreen (Teilen > Zum Home-Bildschirm)."}));
       return;
     }
     const perm = Notification.permission;
     if(perm === "granted"){
       pushBox.replaceChildren(h("div",{class:"fb ok"}, icon(I_OK), h("div",{}, h("b",{text:"Benachrichtigungen aktiv"}), h("span",{text:"Du bekommst Erinnerungen um 10:00 und 18:00 Uhr."}))));
     } else if(perm === "denied"){
-      pushBox.replaceChildren(h("div",{class:"fb bad"}, icon(I_X), h("div",{}, h("b",{text:"Blockiert"}), h("span",{text:"Geh in die iPhone-Einstellungen → Safari/App → Mitteilungen erlauben."}))));
+      pushBox.replaceChildren(h("div",{class:"fb bad"}, icon(I_X), h("div",{}, h("b",{text:"Blockiert"}), h("span",{text:"Geh in die iPhone-Einstellungen > Safari/App > Mitteilungen erlauben."}))));
     } else {
       pushBox.replaceChildren(h("button",{class:"btn wide",text:"Erinnerungen aktivieren",onclick: async () => {
         await subscribePush(); updatePushUI();
@@ -485,7 +485,7 @@ function home(){
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
   const installBanner = !isStandalone ? h("div",{class:"install-banner"},
     h("div",{class:"title",text:"📱 App installieren"}),
-    h("div",{class:"desc",text:"Tippe auf „Teilen" → „Zum Home-Bildschirm", um die App wie eine echte App zu nutzen und Push-Benachrichtigungen zu bekommen."})) : null;
+    h("div",{class:"desc",text:"Tippe auf "Teilen" > "Zum Home-Bildschirm", um die App wie eine echte App zu nutzen und Push-Benachrichtigungen zu bekommen."})) : null;
 
   show(hr, h("div",{class:"body"},
     h("div",{class:"stats"},
@@ -713,3 +713,4 @@ init();
 </script>
 </body>
 </html>
+
