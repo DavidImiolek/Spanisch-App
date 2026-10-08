@@ -485,7 +485,7 @@ function home(){
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
   const installBanner = !isStandalone ? h("div",{class:"install-banner"},
     h("div",{class:"title",text:"📱 App installieren"}),
-    h("div",{class:"desc",text:"Tippe auf "Teilen" > "Zum Home-Bildschirm", um die App wie eine echte App zu nutzen und Push-Benachrichtigungen zu bekommen."})) : null;
+    h("div",{class:"desc",text:"Tippe auf 'Teilen' > 'Zum Home-Bildschirm', um die App wie eine echte App zu nutzen und Push-Benachrichtigungen zu bekommen."})) : null;
 
   show(hr, h("div",{class:"body"},
     h("div",{class:"stats"},
@@ -713,4 +713,5 @@ init();
 </script>
 </body>
 </html>
+
 
