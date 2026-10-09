@@ -960,7 +960,7 @@ function loginScreen(){
   const hr = hero(true);
   hr.append(h("div",{class:"task"}, h("p",{class:"h1",text:"!Hola!"}), h("div",{class:"sub",text:"Anmelden, um deinen Fortschritt zu sichern."})));
   const emailInput = h("input",{type:"email",placeholder:"Deine E-Mail-Adresse",autocomplete:"email"});
-  const codeInput = h("input",{type:"text",placeholder:"6-stelliger Code",autocomplete:"one-time-code",inputMode:"numeric",maxLength:6,style:"display:none"});
+  const codeInput = h("input",{type:"text",placeholder:"Code eingeben",autocomplete:"one-time-code",inputMode:"numeric",maxLength:8,style:"display:none"});
   const msg = h("div",{class:"muted"});
   const btn = h("button",{class:"btn wide",text:"Code senden"});
   let sentEmail = "";
