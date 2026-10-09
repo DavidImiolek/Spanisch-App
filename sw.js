@@ -1,4 +1,4 @@
-const CACHE = "spanisch-v3";
+const CACHE = "spanisch-v4";
 const ASSETS = [
   "./",
   "./index.html",
